@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import Home from './Routes/Home'
 import Tv from './Routes/Tv'
 import Search from './Routes/Search'
@@ -9,11 +9,17 @@ function RouteComponent () {
     <BrowserRouter>
       <Header />
       <Fragment>
-        <Routes>
-          <Route path='/' element={<Home />}></Route>
-          <Route path='/tv' element={<Tv />}></Route>
-          <Route path='/search' element={<Search />}></Route>
-        </Routes>
+        <Switch>
+          <Route path='/tv'>
+            <Tv />
+          </Route>
+          <Route path='/search'>
+            <Search />
+          </Route>
+          <Route path={['/', '/movie/:movieId']}>
+            <Home />
+          </Route>
+        </Switch>
       </Fragment>
     </BrowserRouter>
   )
