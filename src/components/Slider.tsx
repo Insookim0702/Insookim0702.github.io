@@ -27,6 +27,7 @@ const Box = styled(motion.div)<{ img: string }>`
   background-image: url(${props => props.img});
   background-size: cover;
   background-position: center center;
+  cursor: pointer;
   height: 150px;
   &:first-child {
     transform-origin: center left;
@@ -85,6 +86,7 @@ const infoVariants = {
 }
 const Title = styled.p`
   font-size: 40px;
+  margin-left: 35px;
 `
 
 const LeftButton = styled.button`
@@ -93,9 +95,9 @@ const LeftButton = styled.button`
   height: 100%;
   color: white;
   border: none;
-  z-index: 9;
+  z-index: 1;
   background-color: rgba(0, 0, 0, 0.5);
-  left: 0;
+  right: 0;
 `
 
 interface PHome {
@@ -133,12 +135,15 @@ function Slider ({ type }: PHome) {
   return (
     <SliderWrapper>
       <Title>{type}</Title>
-      <AnimatePresence initial={false} onExitComplete={() => setLeaving(false)}>
-        {isLoading && !data ? (
-          <LoadingSlide>Loading...</LoadingSlide>
-        ) : (
-          <>
-            <LeftButton onClick={nextList}>&larr;</LeftButton>
+
+      {isLoading && !data ? (
+        <LoadingSlide>Loading...</LoadingSlide>
+      ) : (
+        <>
+          <AnimatePresence
+            initial={false}
+            onExitComplete={() => setLeaving(false)}
+          >
             <Row
               variants={rowVariants}
               initial='hidden'
@@ -171,10 +176,11 @@ function Slider ({ type }: PHome) {
                     </Box>
                   )
                 })}
+              <LeftButton onClick={nextList}>&rarr;</LeftButton>
             </Row>
-          </>
-        )}
-      </AnimatePresence>
+          </AnimatePresence>
+        </>
+      )}
     </SliderWrapper>
   )
 }

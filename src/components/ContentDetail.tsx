@@ -17,6 +17,7 @@ const Overlay = styled(motion.div)`
   height: 100%;
   opacity: 0;
   background-color: rgba(0, 0, 0, 0.4);
+  z-index: 3;
 `
 
 const Modal = styled(motion.div)`
@@ -70,7 +71,7 @@ const Loading = styled.div`
 `
 const CorverImg = styled.div<{ bgImg: string }>`
   width: 100%;
-  height: 40%;
+  height: 60%;
   background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.8)),
     url(${props => props.bgImg});
   background-size: cover;

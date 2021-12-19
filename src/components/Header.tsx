@@ -7,12 +7,14 @@ import { useForm } from 'react-hook-form'
 const Nav = styled(motion.div)`
   width: 100%;
   height: 60px;
-  display: grid;
-  grid-template-columns: 8fr 2fr;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
   position: fixed;
   top: 0;
   left: 0;
+  padding: 0 20px;
+  z-index: 2;
 `
 
 const Wrap = styled.div`
@@ -25,6 +27,9 @@ const Logo = styled.p`
   margin-right: 50px;
   width: 95px;
   height: 25px;
+  font-size: 40px;
+  font-weight: 900;
+  cursor: pointer;
   color: ${props => props.theme.red};
 `
 
@@ -52,12 +57,15 @@ const Input = styled(motion.input)`
   transform-origin: right;
   background-color: transparent;
   border: none;
-  border-bottom: 2px solid gray;
+  width: 100%;
+  border-bottom: 2px solid white;
+  font-size: 20px;
   color: white;
   z-index: 1;
 `
 const RightWrap = styled(Wrap)`
-  justify-content: flex-end;
+  /* justify-content: flex-end; */
+  margin-right: 120px;
 `
 
 const SearchBoxWrap = styled(motion.div)`
@@ -70,6 +78,13 @@ const SearchBoxWrap = styled(motion.div)`
 `
 const SearchBtn = styled(motion.button)`
   z-index: 1;
+  background-color: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  &:hover {
+    scale: 1.2;
+  }
 `
 
 interface IForm {
@@ -79,9 +94,10 @@ interface IForm {
 function LeftCol () {
   const homeMatch = useRouteMatch('/')
   const tvMatch = useRouteMatch('/tv')
+  const history = useHistory()
   return (
     <Wrap>
-      <Logo>Netflix</Logo>
+      <Logo onClick={() => history.push('/')}>Netflix</Logo>
       <LinkBox>
         <LinkButton to='/'>Home</LinkButton>
         {homeMatch ? <NowBar layoutId='nowBar'></NowBar> : null}
@@ -107,7 +123,7 @@ function RightCol () {
         animate={{ opacity: isSearchOpen ? 1 : 0 }}
       ></SearchBoxWrap> */}
       <SearchBtn
-        animate={{ x: isSearchOpen ? 0 : 150 }}
+        animate={{ x: isSearchOpen ? -7 : 150 }}
         transition={{ type: 'linear' }}
         onClick={() => setIsSearchOpen(!isSearchOpen)}
       >

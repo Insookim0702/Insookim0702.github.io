@@ -6,6 +6,7 @@ import { useHistory, useRouteMatch } from 'react-router'
 import MovieDetail from '../components/ContentDetail'
 import Banner from '../components/Banner'
 import Slider from '../components/Slider'
+import { AnimatePresence } from 'framer-motion'
 
 export const Container = styled.div<{ isDark: boolean }>`
   min-height: 200vh;
