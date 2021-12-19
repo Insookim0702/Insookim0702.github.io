@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useQuery } from 'react-query'
-import { useHistory } from 'react-router'
+import { useHistory, useRouteMatch } from 'react-router'
 import styled from 'styled-components'
 import { fetchDetail, iMovie } from '../api'
 
@@ -116,11 +116,13 @@ interface IMovieInfo {
 
 function MovieDetail ({ layoutId, title, bgImg, id }: IMovieInfo) {
   const history = useHistory()
+  const isMatchTv = useRouteMatch('/tv')
+  const contentType = isMatchTv ? 'tv' : ''
   const { isLoading, data: detail } = useQuery<IDetail>('detail', () =>
     fetchDetail(id)
   )
   function onClickOverlay () {
-    history.push('/')
+    history.push(`/${contentType}`)
   }
 
   return (
@@ -139,7 +141,7 @@ function MovieDetail ({ layoutId, title, bgImg, id }: IMovieInfo) {
             <Info>
               <MovieTitle>{title}</MovieTitle>
               <MovieInfoWrap>
-                <span>⭐️ {detail?.vote_average}</span>
+                <span>⭐️ {detail?.vote_average}/10</span>
                 <span>{detail?.release_date.substring(0, 4)}</span>
                 <span>
                   {detail?.adult ? (

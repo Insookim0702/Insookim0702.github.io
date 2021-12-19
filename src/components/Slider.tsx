@@ -1,9 +1,9 @@
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
-import { fetchMoviePlayList, iMovie, iMovies } from '../api'
+import { fetchMoviePlayList, fetchTvList, iMovie, iMovies } from '../api'
 import { getBackgroundImg } from '../utils'
-import { useHistory } from 'react-router'
+import { useHistory, useLocation, useRouteMatch } from 'react-router'
 import { useQuery } from 'react-query'
 const SliderWrapper = styled.div`
   position: relative;
@@ -95,26 +95,25 @@ const LeftButton = styled.button`
   border: none;
   z-index: 9;
   background-color: rgba(0, 0, 0, 0.5);
-
   left: 0;
 `
 
 interface PHome {
-  // data: iMovie[]
   type: string
 }
 function Slider ({ type }: PHome) {
-  const { isLoading, data } = useQuery<iMovies>(`movie-${type}`, () =>
-    fetchMoviePlayList(type)
+  const isMatchTv = useRouteMatch('/tv')
+  const contentType = isMatchTv ? 'tv' : 'movie'
+  const { isLoading, data } = useQuery<iMovies>(`tv-${type}`, () =>
+    isMatchTv?.isExact ? fetchTvList(type) : fetchMoviePlayList(type)
   )
-  console.log(type, data)
 
   const [leaving, setLeaving] = useState(false)
   const [index, setIndex] = useState(0)
   const history = useHistory()
   const offset = 6
-  function showMovieDetail (movieId: number) {
-    history.push(`/movie/${String(movieId)}`)
+  function showContentDetail (movieId: number) {
+    history.push(`/${contentType}/${String(movieId)}`)
   }
   function nextList () {
     const thisIndexIsBannerMovieIndex = -1
@@ -153,19 +152,21 @@ function Slider ({ type }: PHome) {
             >
               {data?.results
                 .slice(offset * index, offset * index + offset)
-                .map(movie => {
+                .map(contentData => {
                   return (
                     <Box
-                      key={movie.id}
+                      key={contentData.id}
                       variants={BoxVariants}
                       whileHover='hover'
                       transition={{ type: 'tween' }}
-                      img={getBackgroundImg(movie.backdrop_path, 'w500')}
-                      onClick={() => showMovieDetail(movie.id)}
-                      layoutId={`movie-${type}-${movie.id}`}
+                      img={getBackgroundImg(contentData.backdrop_path, 'w500')}
+                      onClick={() => showContentDetail(contentData.id)}
+                      layoutId={`movie-${type}-${contentData.id}`}
                     >
                       <Info variants={infoVariants}>
-                        <h4>{movie.title}</h4>
+                        <h4>
+                          {isMatchTv ? contentData.name : contentData.title}
+                        </h4>
                       </Info>
                     </Box>
                   )

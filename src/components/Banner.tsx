@@ -1,5 +1,6 @@
+import { useRouteMatch } from 'react-router-dom'
 import styled from 'styled-components'
-import { iMovie } from '../api'
+import { iMovie, iTv } from '../api'
 import { getBackgroundImg } from '../utils'
 
 const Loading = styled.div`
@@ -37,9 +38,11 @@ interface IBannerInfo {
   data: iMovie
 }
 function Banner ({ data }: IBannerInfo) {
+  const location = useRouteMatch('/tv')
+
   return (
     <BannerWrapper img={getBackgroundImg(data?.backdrop_path)}>
-      <Title>{data?.title}</Title>
+      <Title>{location?.isExact ? data?.name : data?.title}</Title>
       <Overview>{data?.overview}</Overview>
     </BannerWrapper>
   )

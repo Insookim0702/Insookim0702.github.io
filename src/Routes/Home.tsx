@@ -3,17 +3,17 @@ import styled from 'styled-components'
 import { fetchMoviePlayList, iMovies } from '../api'
 import { getBackgroundImg } from '../utils'
 import { useHistory, useRouteMatch } from 'react-router'
-import MovieDetail from '../components/MovieDetail'
+import MovieDetail from '../components/ContentDetail'
 import Banner from '../components/Banner'
 import Slider from '../components/Slider'
 
-const Container = styled.div<{ isDark: boolean }>`
+export const Container = styled.div<{ isDark: boolean }>`
   min-height: 200vh;
   color: ${props =>
     props.isDark ? props.theme.dark.txtColor : props.theme.light.txtColor};
 `
 
-const Loading = styled.div`
+export const Loading = styled.div`
   font-size: 100px;
   width: 100%;
   height: 100vh;

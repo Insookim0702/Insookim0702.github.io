@@ -10,7 +10,7 @@ function RouteComponent () {
       <Header />
       <Fragment>
         <Switch>
-          <Route path='/tv'>
+          <Route path={['/tv', '/tv/:tvId']}>
             <Tv />
           </Route>
           <Route path='/search'>
