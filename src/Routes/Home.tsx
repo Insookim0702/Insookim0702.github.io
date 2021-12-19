@@ -4,10 +4,8 @@ import styled from 'styled-components'
 import { fetchMoviePlayList, iMovies } from '../api'
 import { getBackgroundImg } from '../utils'
 import { useState } from 'react'
-import { createBrowserHistory } from 'history'
 import { useHistory, useRouteMatch } from 'react-router'
 import MovieDetail from '../components/MovieDetail'
-import { useParams } from 'react-router'
 
 const Container = styled.div<{ isDark: boolean }>`
   min-height: 200vh;
@@ -124,7 +122,9 @@ function Home () {
   const [leaving, setLeaving] = useState(false)
   const history = useHistory()
   const matchMovieDetail = useRouteMatch<{ movieId: string }>('/movie/:movieId')
-  console.log('matchMovieDetail', matchMovieDetail)
+  const clickedMovie = data?.results.find(
+    movie => movie.id === Number(matchMovieDetail?.params.movieId)
+  )
   const offset = 6
   function nextList () {
     const thisIndexIsBannerMovieIndex = -1
@@ -145,6 +145,9 @@ function Home () {
   function showMovieDetail (movieId: number) {
     history.push(`/movie/${String(movieId)}`)
   }
+  function toggleLeaving () {
+    console.log(123)
+  }
 
   return (
     <Container isDark={true}>
@@ -163,11 +166,12 @@ function Home () {
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
-          <AnimatePresence
-            initial={false}
-            onExitComplete={() => setLeaving(false)}
-          >
-            <Slider>
+
+          <Slider>
+            <AnimatePresence
+              initial={false}
+              onExitComplete={() => setLeaving(false)}
+            >
               <Row
                 variants={rowVariants}
                 initial='hidden'
@@ -200,11 +204,14 @@ function Home () {
                     )
                   })}
               </Row>
-            </Slider>
-          </AnimatePresence>
-          {matchMovieDetail ? (
+            </AnimatePresence>
+          </Slider>
+          {matchMovieDetail && clickedMovie ? (
             <MovieDetail
-              pLayoutId={`movie-${matchMovieDetail?.params.movieId}`}
+              id={String(clickedMovie?.id)}
+              layoutId={`movie-${matchMovieDetail?.params.movieId}`}
+              title={clickedMovie?.title + ''}
+              bgImg={getBackgroundImg(clickedMovie?.backdrop_path, 'w500')}
             />
           ) : null}
         </>

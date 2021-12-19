@@ -31,3 +31,9 @@ export function fetchMoviePlayList () {
     `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`
   ).then(resolve => resolve.json())
 }
+
+export function fetchDetail (movieId: string) {
+  return fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`).then(
+    resolve => resolve.json()
+  )
+}
