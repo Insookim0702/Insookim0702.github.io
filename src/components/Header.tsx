@@ -1,7 +1,8 @@
-import { Link, useRouteMatch } from 'react-router-dom'
+import { Link, useRouteMatch, useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { motion, useAnimation, useViewportScroll } from 'framer-motion'
 import { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 
 const Nav = styled(motion.div)`
   width: 100%;
@@ -70,6 +71,11 @@ const SearchBoxWrap = styled(motion.div)`
 const SearchBtn = styled(motion.button)`
   z-index: 1;
 `
+
+interface IForm {
+  keyword: string
+}
+
 function LeftCol () {
   const homeMatch = useRouteMatch('/')
   const tvMatch = useRouteMatch('/tv')
@@ -89,12 +95,17 @@ function LeftCol () {
 }
 function RightCol () {
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const { register, handleSubmit } = useForm<IForm>()
+  const history = useHistory()
+  function onValid (data: IForm) {
+    history.push(`/search?keyword=${data.keyword}`)
+  }
   return (
     <RightWrap>
-      <SearchBoxWrap
+      {/* <SearchBoxWrap
         initial={{ opacity: 0 }}
         animate={{ opacity: isSearchOpen ? 1 : 0 }}
-      ></SearchBoxWrap>
+      ></SearchBoxWrap> */}
       <SearchBtn
         animate={{ x: isSearchOpen ? 0 : 150 }}
         transition={{ type: 'linear' }}
@@ -102,14 +113,20 @@ function RightCol () {
       >
         Search
       </SearchBtn>
-      <Input
-        // variants={inputVariant}
-        // initial={'start'}
-        animate={{ scaleX: isSearchOpen ? 1 : 0 }}
-        transition={{ type: 'linear' }}
-        type='text'
-        placeholder='search movie or tv show...'
-      />
+      <form onSubmit={handleSubmit(onValid)}>
+        <Input
+          // variants={inputVariant}
+          // initial={'start'}
+          animate={{ scaleX: isSearchOpen ? 1 : 0 }}
+          transition={{ type: 'linear' }}
+          type='text'
+          placeholder='search movie or tv show...'
+          {...register('keyword', {
+            required: 'input a keyword for searching.',
+            minLength: { value: 2, message: 'input 2' }
+          })}
+        />
+      </form>
     </RightWrap>
   )
 }

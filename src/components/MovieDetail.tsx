@@ -24,12 +24,6 @@ const Modal = styled(motion.div)`
   height: 90%;
   overflow-y: scroll;
 `
-interface IMovieInfo {
-  layoutId: string
-  title: string
-  bgImg: string
-  id: string
-}
 
 interface IGenres {
   id: number
@@ -111,6 +105,13 @@ const Student = styled(Adult)`
 
 function caclShowTime (time: number) {
   return `${Math.floor(time / 60)}시간 ${time % 60}분`
+}
+
+interface IMovieInfo {
+  layoutId: string
+  title: string
+  bgImg: string
+  id: string
 }
 
 function MovieDetail ({ layoutId, title, bgImg, id }: IMovieInfo) {
