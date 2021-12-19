@@ -4,12 +4,13 @@ const API_KEY = 'd277e1b4016230df2827711ffe3c7c59'
 const BASE_URL = 'https://api.themoviedb.org/3'
 
 export interface iMovies {
-  dates: { maximum: string; minimum: string }
+  dates?: { maximum: string; minimum: string }
   page: number
   results: iMovie[]
   total_pages: number
   total_results: number
 }
+
 export interface iMovie {
   adult: false
   backdrop_path: string
@@ -55,6 +56,13 @@ export function fetchMoviePlayList (type: string) {
 export function fetchTvList (type: string) {
   return fetch(
     `${BASE_URL}/tv/${type}?api_key=${API_KEY}&language=en-US&page=1`
+  ).then(resolve => resolve.json())
+}
+
+// https://api.themoviedb.org/3/search/collection?api_key=d277e1b4016230df2827711ffe3c7c59&language=en-US&page=1
+export function fetchSearchList (type: string, keyword: string) {
+  return fetch(
+    `${BASE_URL}/search/${type}?&query=${keyword}&api_key=${API_KEY}&language=en-US&page=1`
   ).then(resolve => resolve.json())
 }
 

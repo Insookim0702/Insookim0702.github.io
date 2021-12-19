@@ -9,7 +9,7 @@ import MovieDetail from '../components/ContentDetail'
 import { getBackgroundImg } from '../utils'
 
 function Tv () {
-  const sliderList = ['popular', 'airing_today', 'on_the_air']
+  const sliderList = ['popular', 'airing_today', 'on_the_air', 'top_rated']
   const { isLoading, data } = useQuery<iMovies>('tv-popular', () =>
     fetchTvList('popular')
   )

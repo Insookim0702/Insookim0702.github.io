@@ -3,6 +3,8 @@ import { useQuery } from 'react-query'
 import { useHistory, useRouteMatch } from 'react-router'
 import styled from 'styled-components'
 import { fetchDetail, iMovie } from '../api'
+import { caclShowTime } from '../utils'
+import Adult from './Adult'
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -88,25 +90,6 @@ const MovieInfoWrap = styled.div`
   }
 `
 
-const Adult = styled.div`
-  width: 20px;
-  height: 20px;
-  font-size: 17px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 900;
-  border-radius: 10px;
-  background-color: #ff4757;
-`
-const Student = styled(Adult)`
-  background-color: #f79f1f;
-`
-
-function caclShowTime (time: number) {
-  return `${Math.floor(time / 60)}시간 ${time % 60}분`
-}
-
 interface IMovieInfo {
   layoutId: string
   title: string
@@ -144,15 +127,7 @@ function MovieDetail ({ layoutId, title, bgImg, id }: IMovieInfo) {
                 <span>⭐️ {detail?.vote_average}/10</span>
                 <span>{detail?.release_date.substring(0, 4)}</span>
                 <span>
-                  {detail?.adult ? (
-                    <Adult>
-                      <p>19</p>
-                    </Adult>
-                  ) : (
-                    <Student>
-                      <p>15</p>
-                    </Student>
-                  )}
+                  <Adult isAdult={detail?.adult || false} />
                 </span>
 
                 <span>{caclShowTime(Number(detail?.runtime))}</span>
