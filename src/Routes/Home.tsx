@@ -23,7 +23,10 @@ const Loading = styled.div`
 `
 
 function Home () {
-  const { isLoading, data } = useQuery<iMovies>('movies', fetchMoviePlayList)
+  const sliderList = ['popular', 'now_playing', 'upcoming']
+  const { isLoading, data } = useQuery<iMovies>('movie-popular', () =>
+    fetchMoviePlayList('popular')
+  )
   const matchMovieDetail = useRouteMatch<{ movieId: string }>('/movie/:movieId')
   const clickedMovie = data?.results.find(
     movie => movie.id === Number(matchMovieDetail?.params.movieId)
@@ -38,7 +41,9 @@ function Home () {
           {data ? (
             <>
               <Banner data={data.results[0]} />
-              <Slider data={data.results} />
+              {sliderList.map((slider, idx) => {
+                return <Slider key={idx} type={slider} />
+              })}
             </>
           ) : null}
           {matchMovieDetail && clickedMovie ? (

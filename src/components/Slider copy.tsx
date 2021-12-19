@@ -1,10 +1,9 @@
 import styled from 'styled-components'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
-import { fetchMoviePlayList, iMovie, iMovies } from '../api'
+import { iMovie, iMovies } from '../api'
 import { getBackgroundImg } from '../utils'
 import { useHistory } from 'react-router'
-import { useQuery } from 'react-query'
 const SliderWrapper = styled.div`
   position: relative;
   top: -100px;
@@ -14,12 +13,8 @@ const Row = styled(motion.div)`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  /* position: absolute; */
+  position: absolute;
   gap: 5px;
-`
-const LoadingSlide = styled.div`
-  width: 100%;
-  height: 150px;
 `
 
 const Box = styled(motion.div)<{ img: string }>`
@@ -83,32 +78,11 @@ const infoVariants = {
     }
   }
 }
-const Title = styled.p`
-  font-size: 40px;
-`
-
-const LeftButton = styled.button`
-  font-size: 30px;
-  position: absolute;
-  height: 100%;
-  color: white;
-  border: none;
-  z-index: 9;
-  background-color: rgba(0, 0, 0, 0.5);
-
-  left: 0;
-`
 
 interface PHome {
-  // data: iMovie[]
-  type: string
+  data: iMovie[]
 }
-function Slider ({ type }: PHome) {
-  const { isLoading, data } = useQuery<iMovies>(`movie-${type}`, () =>
-    fetchMoviePlayList(type)
-  )
-  console.log(type, data)
-
+function Slider ({ data }: PHome) {
   const [leaving, setLeaving] = useState(false)
   const [index, setIndex] = useState(0)
   const history = useHistory()
@@ -120,7 +94,7 @@ function Slider ({ type }: PHome) {
     const thisIndexIsBannerMovieIndex = -1
     const thisValueIsIndexStartValue1 = 1
     if (data) {
-      const dataLength = data?.results.length
+      const dataLength = data.length
       const maxIndex = Math.ceil(
         (dataLength + thisIndexIsBannerMovieIndex) / offset
       )
@@ -133,46 +107,39 @@ function Slider ({ type }: PHome) {
   }
   return (
     <SliderWrapper>
-      <Title>{type}</Title>
       <AnimatePresence initial={false} onExitComplete={() => setLeaving(false)}>
-        {isLoading && !data ? (
-          <LoadingSlide>Loading...</LoadingSlide>
-        ) : (
-          <>
-            <LeftButton onClick={nextList}>&larr;</LeftButton>
-            <Row
-              variants={rowVariants}
-              initial='hidden'
-              animate='visible'
-              exit='exit'
-              key={index}
-              transition={{
-                type: 'tween',
-                duration: 1
-              }}
-            >
-              {data?.results
-                .slice(offset * index, offset * index + offset)
-                .map(movie => {
-                  return (
-                    <Box
-                      key={movie.id}
-                      variants={BoxVariants}
-                      whileHover='hover'
-                      transition={{ type: 'tween' }}
-                      img={getBackgroundImg(movie.backdrop_path, 'w500')}
-                      onClick={() => showMovieDetail(movie.id)}
-                      layoutId={`movie-${type}-${movie.id}`}
-                    >
-                      <Info variants={infoVariants}>
-                        <h4>{movie.title}</h4>
-                      </Info>
-                    </Box>
-                  )
-                })}
-            </Row>
-          </>
-        )}
+        <Row
+          variants={rowVariants}
+          initial='hidden'
+          animate='visible'
+          exit='exit'
+          key={index}
+          transition={{
+            type: 'tween',
+            duration: 1
+          }}
+        >
+          {data
+            .slice(1)
+            .slice(offset * index, offset * index + offset)
+            .map(movie => {
+              return (
+                <Box
+                  key={movie.id}
+                  variants={BoxVariants}
+                  whileHover='hover'
+                  transition={{ type: 'tween' }}
+                  img={getBackgroundImg(movie.backdrop_path, 'w500')}
+                  onClick={() => showMovieDetail(movie.id)}
+                  layoutId={`movie-${movie.id}`}
+                >
+                  <Info variants={infoVariants}>
+                    <h4>{movie.title}</h4>
+                  </Info>
+                </Box>
+              )
+            })}
+        </Row>
       </AnimatePresence>
     </SliderWrapper>
   )

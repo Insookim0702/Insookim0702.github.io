@@ -26,9 +26,13 @@ export interface iMovie {
   vote_average: number
   vote_count: number
 }
-export function fetchMoviePlayList () {
+
+// https://api.themoviedb.org/3/movie/latest?api_key=<<api_key>>&language=en-US
+export function fetchMoviePlayList (type: string) {
+  console.log(type, type, type, type, type, type)
+
   return fetch(
-    `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=en-US&page=1`
+    `${BASE_URL}/movie/${type}?api_key=${API_KEY}&language=en-US&page=1`
   ).then(resolve => resolve.json())
 }
 
