@@ -66,8 +66,8 @@ export function fetchSearchList (type: string, keyword: string) {
   ).then(resolve => resolve.json())
 }
 
-export function fetchDetail (movieId: string) {
-  return fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}`).then(
+export function fetchDetail (contentId: string, type = 'movie') {
+  return fetch(`${BASE_URL}/${type}/${contentId}?api_key=${API_KEY}`).then(
     resolve => resolve.json()
   )
 }

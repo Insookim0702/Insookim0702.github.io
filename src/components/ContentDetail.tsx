@@ -101,11 +101,11 @@ interface IMovieInfo {
 function MovieDetail ({ layoutId, title, bgImg, id }: IMovieInfo) {
   const history = useHistory()
   const isMatchTv = useRouteMatch('/tv')
-  const contentType = isMatchTv ? 'tv' : ''
+  const contentType = isMatchTv?.path === '/tv' ? 'tv' : 'movie'
+
   const { isLoading, data: detail } = useQuery<IDetail>(`detail-${id}`, () =>
-    fetchDetail(id)
+    fetchDetail(id, contentType)
   )
-  console.log('detail', detail)
 
   function onClickOverlay () {
     history.push(`/${contentType}`)

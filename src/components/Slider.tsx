@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { fetchMoviePlayList, fetchTvList, iMovie, iMovies } from '../api'
 import { getBackgroundImg } from '../utils'
-import { useHistory, useLocation, useRouteMatch } from 'react-router'
+import { useHistory, useParams, useRouteMatch } from 'react-router'
 import ContentDetail from '../components/ContentDetail'
 import { useQuery } from 'react-query'
 
@@ -104,29 +104,28 @@ const LeftButton = styled.button`
 `
 
 interface PHome {
-  type: string
+  sliderType: string
 }
 const offset = 6
-function Slider ({ type }: PHome) {
-  const isMatchTv = useRouteMatch('/tv')
+function Slider ({ sliderType }: PHome) {
   const history = useHistory()
+  const isMatchTv = useRouteMatch('/tv')?.url === '/tv'
   const matchTvDetail = useRouteMatch<{ tvId: string }>('/tv/:tvId')
   const matchMovieDetail = useRouteMatch<{ movieId: string }>('/movie/:movieId')
-  const contentType = isMatchTv ? 'tv' : 'movie'
-  const { isLoading, data } = useQuery<iMovies>(`tv-${type}`, () =>
-    isMatchTv?.isExact ? fetchTvList(type) : fetchMoviePlayList(type)
-  )
   const [leaving, setLeaving] = useState(false)
   const [index, setIndex] = useState(0)
+  const { isLoading, data } = useQuery<iMovies>(`tv-${sliderType}`, () =>
+    isMatchTv ? fetchTvList(sliderType) : fetchMoviePlayList(sliderType)
+  )
 
   function showContentDetail (contentId: number) {
-    history.push(`/${contentType}/${String(contentId)}`)
+    history.push(`/${isMatchTv ? 'tv' : 'movie'}/${String(contentId)}`)
   }
-
-  const clickedContent = data?.results.find(content =>
-    String(content.id) === matchMovieDetail?.params.movieId
-      ? matchMovieDetail?.params.movieId
-      : matchTvDetail?.params.tvId
+  const id = isMatchTv
+    ? matchTvDetail?.params.tvId
+    : matchMovieDetail?.params.movieId
+  const clickedContent = data?.results.find(
+    content => String(content.id) === id
   )
 
   function nextList () {
@@ -146,7 +145,7 @@ function Slider ({ type }: PHome) {
   }
   return (
     <SliderWrapper>
-      <Title>{type}</Title>
+      <Title>{sliderType}</Title>
       {isLoading && !data ? (
         <LoadingSlide>Loading...</LoadingSlide>
       ) : (
@@ -177,7 +176,7 @@ function Slider ({ type }: PHome) {
                       transition={{ type: 'tween' }}
                       img={getBackgroundImg(contentData.backdrop_path, 'w500')}
                       onClick={() => showContentDetail(contentData.id)}
-                      layoutId={`movie-${type}-${contentData.id}`}
+                      layoutId={`contents-${sliderType}-${contentData.id}`}
                     >
                       <Info variants={infoVariants}>
                         <h4>
@@ -193,13 +192,15 @@ function Slider ({ type }: PHome) {
               <ContentDetail
                 id={String(clickedContent?.id)}
                 layoutId={
-                  matchMovieDetail
-                    ? `movie-${matchMovieDetail.params.movieId}`
-                    : matchTvDetail
-                    ? `tv-${matchTvDetail?.params.tvId}`
-                    : ''
+                  isMatchTv
+                    ? `${matchTvDetail?.params.tvId}`
+                    : `${matchMovieDetail?.params.movieId}`
                 }
-                title={clickedContent?.title + ''}
+                title={
+                  isMatchTv
+                    ? clickedContent?.name + ''
+                    : clickedContent?.title + ''
+                }
                 bgImg={getBackgroundImg(clickedContent?.backdrop_path, 'w500')}
               />
             ) : null}

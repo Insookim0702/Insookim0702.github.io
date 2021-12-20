@@ -28,18 +28,18 @@ function Tv () {
             <>
               <Banner data={data.results[0]} />
               {sliderList.map((slider, idx) => {
-                return <Slider key={idx} type={slider} />
+                return <Slider key={idx} sliderType={slider} />
               })}
             </>
           ) : null}
-          {matchTvDetail && clickedTv ? (
+          {/* {matchTvDetail && clickedTv ? (
             <MovieDetail
               id={String(clickedTv?.id)}
               layoutId={`movie-${matchTvDetail?.params.tvId}`}
-              title={clickedTv?.title + ''}
+              title={clickedTv?.name + ''}
               bgImg={getBackgroundImg(clickedTv?.backdrop_path, 'w500')}
             />
-          ) : null}
+          ) : null} */}
         </>
       )}
     </Container>

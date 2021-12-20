@@ -35,7 +35,7 @@ function Home () {
             <>
               <Banner data={data.results[0]} />
               {sliderList.map((slider, idx) => {
-                return <Slider key={idx} type={slider} />
+                return <Slider key={idx} sliderType={slider} />
               })}
             </>
           ) : null}

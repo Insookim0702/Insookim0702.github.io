@@ -103,7 +103,7 @@ function LeftCol () {
         {homeMatch ? <NowBar layoutId='nowBar'></NowBar> : null}
       </LinkBox>
       <LinkBox>
-        <LinkButton to='/Tv'>Tv Show</LinkButton>
+        <LinkButton to='/tv'>Tv Show</LinkButton>
         {tvMatch ? <NowBar layoutId='nowBar'></NowBar> : null}
       </LinkBox>
     </Wrap>
