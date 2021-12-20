@@ -41,11 +41,11 @@ const Box = styled(motion.div)<{ img: string }>`
 `
 
 const Info = styled(motion.div)`
-  padding: 10px;
   background-color: ${props => props.theme.dark.darker};
   opacity: 0;
   position: absolute;
-  width: 91%;
+  width: 100%;
+  padding: 10px 0;
   bottom: 0;
   h4 {
     text-align: center;
@@ -59,8 +59,8 @@ const BoxVariants = {
     y: -40,
     transition: {
       type: 'tween',
-      duration: 0.2,
-      delay: 0.3
+      duration: 0.1,
+      delay: 0.1
     }
   }
 }
