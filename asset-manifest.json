@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/nomd-netflix/static/js/main.a30cb95d.js",
+    "main.js": "/nomd-netflix/static/js/main.f6b85743.js",
     "index.html": "/nomd-netflix/index.html",
-    "main.a30cb95d.js.map": "/nomd-netflix/static/js/main.a30cb95d.js.map"
+    "main.f6b85743.js.map": "/nomd-netflix/static/js/main.f6b85743.js.map"
   },
   "entrypoints": [
-    "static/js/main.a30cb95d.js"
+    "static/js/main.f6b85743.js"
   ]
 }
