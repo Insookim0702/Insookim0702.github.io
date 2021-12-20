@@ -4,17 +4,20 @@ import { useState } from 'react'
 import { fetchMoviePlayList, fetchTvList, iMovie, iMovies } from '../api'
 import { getBackgroundImg } from '../utils'
 import { useHistory, useLocation, useRouteMatch } from 'react-router'
+import ContentDetail from '../components/ContentDetail'
 import { useQuery } from 'react-query'
+
 const SliderWrapper = styled.div`
   position: relative;
   top: -100px;
+  height: 200px;
 `
 
 const Row = styled(motion.div)`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  /* position: absolute; */
+  position: absolute;
   gap: 5px;
 `
 const LoadingSlide = styled.div`
@@ -103,20 +106,29 @@ const LeftButton = styled.button`
 interface PHome {
   type: string
 }
+const offset = 6
 function Slider ({ type }: PHome) {
   const isMatchTv = useRouteMatch('/tv')
+  const history = useHistory()
+  const matchTvDetail = useRouteMatch<{ tvId: string }>('/tv/:tvId')
+  const matchMovieDetail = useRouteMatch<{ movieId: string }>('/movie/:movieId')
   const contentType = isMatchTv ? 'tv' : 'movie'
   const { isLoading, data } = useQuery<iMovies>(`tv-${type}`, () =>
     isMatchTv?.isExact ? fetchTvList(type) : fetchMoviePlayList(type)
   )
-
   const [leaving, setLeaving] = useState(false)
   const [index, setIndex] = useState(0)
-  const history = useHistory()
-  const offset = 6
-  function showContentDetail (movieId: number) {
-    history.push(`/${contentType}/${String(movieId)}`)
+
+  function showContentDetail (contentId: number) {
+    history.push(`/${contentType}/${String(contentId)}`)
   }
+
+  const clickedContent = data?.results.find(content =>
+    String(content.id) === matchMovieDetail?.params.movieId
+      ? matchMovieDetail?.params.movieId
+      : matchTvDetail?.params.tvId
+  )
+
   function nextList () {
     const thisIndexIsBannerMovieIndex = -1
     const thisValueIsIndexStartValue1 = 1
@@ -135,7 +147,6 @@ function Slider ({ type }: PHome) {
   return (
     <SliderWrapper>
       <Title>{type}</Title>
-
       {isLoading && !data ? (
         <LoadingSlide>Loading...</LoadingSlide>
       ) : (
@@ -178,6 +189,20 @@ function Slider ({ type }: PHome) {
                 })}
               <LeftButton onClick={nextList}>&rarr;</LeftButton>
             </Row>
+            {(matchMovieDetail || matchTvDetail) && clickedContent ? (
+              <ContentDetail
+                id={String(clickedContent?.id)}
+                layoutId={
+                  matchMovieDetail
+                    ? `movie-${matchMovieDetail.params.movieId}`
+                    : matchTvDetail
+                    ? `tv-${matchTvDetail?.params.tvId}`
+                    : ''
+                }
+                title={clickedContent?.title + ''}
+                bgImg={getBackgroundImg(clickedContent?.backdrop_path, 'w500')}
+              />
+            ) : null}
           </AnimatePresence>
         </>
       )}

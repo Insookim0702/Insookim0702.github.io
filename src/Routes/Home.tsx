@@ -1,12 +1,8 @@
 import { useQuery } from 'react-query'
 import styled from 'styled-components'
 import { fetchMoviePlayList, iMovies } from '../api'
-import { getBackgroundImg } from '../utils'
-import { useHistory, useRouteMatch } from 'react-router'
-import MovieDetail from '../components/ContentDetail'
 import Banner from '../components/Banner'
 import Slider from '../components/Slider'
-import { AnimatePresence } from 'framer-motion'
 
 export const Container = styled.div<{ isDark: boolean }>`
   min-height: 200vh;
@@ -28,10 +24,6 @@ function Home () {
   const { isLoading, data } = useQuery<iMovies>('movie-popular', () =>
     fetchMoviePlayList('popular')
   )
-  const matchMovieDetail = useRouteMatch<{ movieId: string }>('/movie/:movieId')
-  const clickedMovie = data?.results.find(
-    movie => movie.id === Number(matchMovieDetail?.params.movieId)
-  )
 
   return (
     <Container isDark={true}>
@@ -46,14 +38,6 @@ function Home () {
                 return <Slider key={idx} type={slider} />
               })}
             </>
-          ) : null}
-          {matchMovieDetail && clickedMovie ? (
-            <MovieDetail
-              id={String(clickedMovie?.id)}
-              layoutId={`movie-${matchMovieDetail?.params.movieId}`}
-              title={clickedMovie?.title + ''}
-              bgImg={getBackgroundImg(clickedMovie?.backdrop_path, 'w500')}
-            />
           ) : null}
         </>
       )}
