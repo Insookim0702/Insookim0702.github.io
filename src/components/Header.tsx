@@ -92,19 +92,32 @@ interface IForm {
 }
 
 function LeftCol () {
-  const homeMatch = useRouteMatch('/')
-  const tvMatch = useRouteMatch('/tv')
+  const MatchMoviePage = useRouteMatch('/')
+  const MatchMovieDetailPage = useRouteMatch('/movie/:movieId')
+  const MatchTvPage = useRouteMatch('/tv')
+  const MatchTvDetailPage = useRouteMatch('/tv/:tvId')
   const history = useHistory()
+  function isMovie () {
+    if (
+      (MatchMoviePage || MatchMovieDetailPage) &&
+      !MatchTvPage &&
+      !MatchTvDetailPage
+    ) {
+      return true
+    } else {
+      return false
+    }
+  }
   return (
     <Wrap>
       <Logo onClick={() => history.push('/')}>Netflix</Logo>
       <LinkBox>
         <LinkButton to='/'>Home</LinkButton>
-        {homeMatch ? <NowBar layoutId='nowBar'></NowBar> : null}
+        {isMovie() ? <NowBar layoutId='nowBar'></NowBar> : null}
       </LinkBox>
       <LinkBox>
         <LinkButton to='/tv'>Tv Show</LinkButton>
-        {tvMatch ? <NowBar layoutId='nowBar'></NowBar> : null}
+        {!isMovie() ? <NowBar layoutId='nowBar'></NowBar> : null}
       </LinkBox>
     </Wrap>
   )
