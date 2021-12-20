@@ -133,7 +133,11 @@ function MovieDetail ({ layoutId, title, bgImg, id }: IMovieInfo) {
                   <Adult isAdult={detail?.adult || false} />
                 </span>
 
-                <span>{caclShowTime(Number(detail?.runtime))}</span>
+                <span>
+                  {contentType === 'tv'
+                    ? ''
+                    : caclShowTime(Number(detail?.runtime))}
+                </span>
               </MovieInfoWrap>
               <h1>{detail?.overview}</h1>
             </Info>
