@@ -26,7 +26,7 @@ const LoadingSlide = styled.div`
 `
 
 const Box = styled(motion.div)<{ img: string }>`
-  background-color: white;
+  background-color: gray;
   background-image: url(${props => props.img});
   background-size: cover;
   background-position: center center;
