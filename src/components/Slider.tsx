@@ -7,6 +7,10 @@ import { useHistory, useParams, useRouteMatch } from 'react-router'
 import ContentDetail from '../components/ContentDetail'
 import { useQuery } from 'react-query'
 
+interface PHome {
+  sliderType: string
+}
+
 const SliderWrapper = styled.div`
   position: relative;
   top: -100px;
@@ -31,6 +35,7 @@ const Box = styled(motion.div)<{ img: string }>`
   background-size: cover;
   background-position: center center;
   cursor: pointer;
+  position: relative;
   height: 150px;
   &:first-child {
     transform-origin: center left;
@@ -92,20 +97,23 @@ const Title = styled.p`
   margin-left: 35px;
 `
 
-const LeftButton = styled.button`
-  font-size: 30px;
-  position: absolute;
+const LeftButton = styled(motion.button)`
+  font-size: 40px;
   height: 100%;
-  color: white;
-  border: none;
-  z-index: 1;
-  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
   right: 0;
+  background: linear-gradient(to right, transparent, black);
+  color: white;
+  cursor: pointer;
+  z-index: 1;
+  border: none;
 `
 
-interface PHome {
-  sliderType: string
-}
+const RightButton = styled(LeftButton)`
+  left: 0;
+  background: linear-gradient(to left, transparent, black);
+`
+
 const offset = 6
 function Slider ({ sliderType }: PHome) {
   const history = useHistory()
@@ -129,13 +137,10 @@ function Slider ({ sliderType }: PHome) {
   )
 
   function nextList () {
-    const thisIndexIsBannerMovieIndex = -1
-    const thisValueIsIndexStartValue1 = 1
+    const thisValueIsIndexStartValue1 = 1 // 1부터 시작
     if (data) {
       const dataLength = data?.results.length
-      const maxIndex = Math.ceil(
-        (dataLength + thisIndexIsBannerMovieIndex) / offset
-      )
+      const maxIndex = Math.ceil(dataLength / offset)
       if (maxIndex <= index + thisValueIsIndexStartValue1) {
         setIndex(0)
         return
@@ -143,6 +148,19 @@ function Slider ({ sliderType }: PHome) {
       setIndex(prev => prev + 1)
     }
   }
+
+  function prevList () {
+    if (data) {
+      const dataLength = data?.results.length
+      const maxIndex = Math.ceil(dataLength / offset)
+      if (index === 0) {
+        setIndex(maxIndex - 1)
+        return
+      }
+      setIndex(prev => prev - 1)
+    }
+  }
+
   return (
     <SliderWrapper>
       <Title>{sliderType}</Title>
@@ -165,6 +183,9 @@ function Slider ({ sliderType }: PHome) {
                 duration: 1
               }}
             >
+              <RightButton whileHover={{ fontSize: '50px' }} onClick={prevList}>
+                &larr;
+              </RightButton>
               {data?.results
                 .slice(offset * index, offset * index + offset)
                 .map(contentData => {
@@ -186,7 +207,9 @@ function Slider ({ sliderType }: PHome) {
                     </Box>
                   )
                 })}
-              <LeftButton onClick={nextList}>&rarr;</LeftButton>
+              <LeftButton whileHover={{ fontSize: '50px' }} onClick={nextList}>
+                &rarr;
+              </LeftButton>
             </Row>
             {(matchMovieDetail || matchTvDetail) && clickedContent ? (
               <ContentDetail
