@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
 import { fetchMoviePlayList, fetchTvList, iMovie, iMovies } from '../api'
 import { getBackgroundImg } from '../utils'
-import { useHistory, useParams, useRouteMatch } from 'react-router'
+import { useRouteMatch } from 'react-router'
 import ContentDetail from '../components/ContentDetail'
 import { useQuery } from 'react-query'
+import Box from './Box'
 
-interface PHome {
+export interface PHome {
   sliderType: string
 }
 
@@ -27,35 +28,6 @@ const Row = styled(motion.div)`
 const LoadingSlide = styled.div`
   width: 100%;
   height: 150px;
-`
-
-const Box = styled(motion.div)<{ img: string }>`
-  background-color: gray;
-  background-image: url(${props => props.img});
-  background-size: cover;
-  background-position: center center;
-  cursor: pointer;
-  position: relative;
-  height: 150px;
-  &:first-child {
-    transform-origin: center left;
-  }
-  &:last-child {
-    transform-origin: center right;
-  }
-`
-
-const Info = styled(motion.div)`
-  background-color: ${props => props.theme.dark.darker};
-  opacity: 0;
-  position: absolute;
-  width: 100%;
-  padding: 10px 0;
-  bottom: 0;
-  h4 {
-    text-align: center;
-    font-size: 18px;
-  }
 `
 
 const BoxVariants = {
@@ -82,16 +54,6 @@ const rowVariants = {
   }
 }
 
-const infoVariants = {
-  hover: {
-    opacity: 1,
-    transition: {
-      type: 'tween',
-      duration: 0.2,
-      delay: 0.3
-    }
-  }
-}
 const Title = styled.p`
   font-size: 40px;
   margin-left: 35px;
@@ -116,7 +78,6 @@ const RightButton = styled(LeftButton)`
 
 const offset = 6
 function Slider ({ sliderType }: PHome) {
-  const history = useHistory()
   const isMatchTv = useRouteMatch('/tv')?.url === '/tv'
   const matchTvDetail = useRouteMatch<{ tvId: string }>('/tv/:tvId')
   const matchMovieDetail = useRouteMatch<{ movieId: string }>('/movie/:movieId')
@@ -126,9 +87,6 @@ function Slider ({ sliderType }: PHome) {
     isMatchTv ? fetchTvList(sliderType) : fetchMoviePlayList(sliderType)
   )
 
-  function showContentDetail (contentId: number) {
-    history.push(`/${isMatchTv ? 'tv' : 'movie'}/${String(contentId)}`)
-  }
   const id = isMatchTv
     ? matchTvDetail?.params.tvId
     : matchMovieDetail?.params.movieId
@@ -192,19 +150,9 @@ function Slider ({ sliderType }: PHome) {
                   return (
                     <Box
                       key={contentData.id}
-                      variants={BoxVariants}
-                      whileHover='hover'
-                      transition={{ type: 'tween' }}
-                      img={getBackgroundImg(contentData.backdrop_path, 'w500')}
-                      onClick={() => showContentDetail(contentData.id)}
-                      layoutId={`contents-${sliderType}-${contentData.id}`}
-                    >
-                      <Info variants={infoVariants}>
-                        <h4>
-                          {isMatchTv ? contentData.name : contentData.title}
-                        </h4>
-                      </Info>
-                    </Box>
+                      contentData={contentData}
+                      sliderType={sliderType}
+                    />
                   )
                 })}
               <LeftButton whileHover={{ fontSize: '50px' }} onClick={nextList}>
